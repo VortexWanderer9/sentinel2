@@ -40,6 +40,9 @@ impl Config {
                     threshold = val
                         .parse()
                         .map_err(|_| format!("invalid --threshold value: {val}"))?;
+                    if threshold == 0 {
+                        return Err("--threshold must be at least 1".to_string());
+                    }
                 }
                 "--window" | "-w" => {
                     i += 1;
@@ -47,6 +50,9 @@ impl Config {
                     window_secs = val
                         .parse()
                         .map_err(|_| format!("invalid --window value: {val}"))?;
+                    if window_secs == 0 {
+                        return Err("--window must be at least 1 second".to_string());
+                    }
                 }
                 "--json" => {
                     json = true;
@@ -70,6 +76,29 @@ impl Config {
             window_secs,
             json,
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Config;
+
+    fn args(values: &[&str]) -> Vec<String> {
+        values.iter().map(|value| (*value).to_string()).collect()
+    }
+
+    #[test]
+    fn rejects_zero_threshold() {
+        let error = Config::from_args(&args(&["sentinel", "--file", "auth.log", "--threshold", "0"]))
+            .expect_err("zero must not be a valid threshold");
+        assert_eq!(error, "--threshold must be at least 1");
+    }
+
+    #[test]
+    fn rejects_zero_window() {
+        let error = Config::from_args(&args(&["sentinel", "--file", "auth.log", "--window", "0"]))
+            .expect_err("zero must not be a valid window");
+        assert_eq!(error, "--window must be at least 1 second");
     }
 }
 
