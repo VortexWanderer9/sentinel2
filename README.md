@@ -1,4 +1,4 @@
-# sentinel
+# _v.1
 
 A small, dependency-light Rust CLI that scans sshd-style auth logs for
 brute-force login attempts and user-enumeration bursts.
