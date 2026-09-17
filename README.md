@@ -35,6 +35,10 @@ sentinel --file /var/log/auth.log --threshold 8 --window 30
 sentinel --file /var/log/auth.log --json
 ```
 
+`--threshold` and `--window` must both be positive values. A threshold of
+`1` reports every failed login; use the defaults for a more conservative
+starting point.
+
 ```
 USAGE:
     sentinel --file <path> [OPTIONS]
@@ -70,7 +74,7 @@ cargo test
 
 Covers log parsing (valid lines, unrelated lines), the sliding-window
 analyzer (threshold, window boundaries, burst merging, ignoring successful
-logins), and report time formatting.
+logins), report time formatting, and validation of command-line settings.
 
 ## Limitations
 
